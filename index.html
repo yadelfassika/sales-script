@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echelon · Cold Call Console</title>
+<meta name="description" content="Echelon Advising — internal cold call console.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07080B;
+    --panel:#0C0E12;
+    --panel-2:#10131A;
+    --line:rgba(255,255,255,0.07);
+    --line-2:rgba(255,255,255,0.13);
+    --txt:#EAEEF3;
+    --txt-2:#9AA3B0;
+    --txt-3:#5F6772;
+    --ice:#6FC3FF;
+    --ice-soft:#9AD6FF;
+    --silver:#C9D2DD;
+    --go:#73E0AC;
+    --amber:#E6BE83;
+    --warn:#E58A8A;
+    --glow:rgba(111,195,255,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--txt);
+    font-family:'Geist',sans-serif;
+    font-weight:400;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding:0 0 100px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  /* scroll progress */
+  .progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--ice),var(--ice-soft));z-index:50;transition:width .12s linear;box-shadow:0 0 12px var(--glow)}
+  /* atmosphere */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 500px at 78% -8%, var(--glow), transparent 60%),
+      radial-gradient(700px 500px at 5% 105%, rgba(201,210,221,0.05), transparent 55%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(circle at 50% 30%,#000,transparent 85%);
+            mask-image:radial-gradient(circle at 50% 30%,#000,transparent 85%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 28px}
+
+  /* side nav */
+  .sidenav{position:fixed;top:50%;right:22px;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:7px;padding:14px 10px;background:rgba(12,14,18,0.65);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:24px}
+  .sidenav a{display:flex;align-items:center;gap:10px;color:var(--txt-3);text-decoration:none;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;transition:color .2s,gap .2s}
+  .sidenav .dot{width:7px;height:7px;border-radius:50%;background:var(--txt-3);border:1px solid transparent;transition:all .2s;flex:none}
+  .sidenav a .lbl{opacity:0;width:0;overflow:hidden;white-space:nowrap;transition:all .2s}
+  .sidenav a:hover{color:var(--ice);gap:10px}
+  .sidenav a:hover .dot{background:var(--ice);box-shadow:0 0 10px var(--ice)}
+  .sidenav a:hover .lbl{opacity:1;width:auto;padding-right:6px}
+  .sidenav a.active{color:var(--silver)}
+  .sidenav a.active .dot{background:var(--ice);box-shadow:0 0 10px var(--ice);transform:scale(1.15)}
+
+  /* header */
+  header{padding:58px 0 28px}
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:30px}
+  .mark{width:26px;height:26px;border:1.5px solid var(--ice);border-radius:6px;position:relative;flex:none;
+    box-shadow:0 0 18px rgba(111,195,255,.35) inset, 0 0 14px rgba(111,195,255,.25)}
+  .mark::before{content:"";position:absolute;inset:6px;border-left:1.5px solid var(--ice);border-top:1.5px solid var(--ice)}
+  .brand .b-name{font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--silver)}
+  .brand .b-sub{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--txt-3);margin-left:auto}
+
+  h1{font-size:clamp(32px,4.6vw,48px);font-weight:600;letter-spacing:-.022em;line-height:1.04}
+  h1 .dim{color:var(--txt-3)}
+  .lede{margin-top:14px;color:var(--txt-2);font-size:15.5px;max-width:680px;font-weight:300}
+  .lede b{color:var(--ice-soft);font-weight:500}
+
+  /* philosophy bar */
+  .philo{margin-top:24px;background:linear-gradient(180deg,rgba(111,195,255,.06),rgba(111,195,255,.02));border:1px solid rgba(111,195,255,.18);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .philo .pl{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--ice);text-transform:uppercase;flex:none}
+  .philo .pv{font-size:14.5px;color:var(--silver);font-weight:400;line-height:1.45}
+  .philo .pv b{color:var(--txt);font-weight:600}
+  .philo .pn{font-family:'Geist Mono',monospace;font-size:11px;color:var(--txt-3);margin-left:auto}
+
+  /* pacing key */
+  .pacekey{margin-top:14px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+  .pacekey .pkl{font-family:'Geist Mono',monospace;font-size:10px;color:var(--txt-3);letter-spacing:.18em;text-transform:uppercase;margin-right:4px}
+  .pacekey .pkp{font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--txt-2);background:var(--panel);border:1px solid var(--line);padding:5px 10px;border-radius:18px;display:inline-flex;align-items:center;gap:6px}
+  .pacekey .pkp .m{color:var(--ice)}
+  .pacekey .pkp .h{color:var(--txt);font-weight:500}
+  .pacekey .pkp .b{color:var(--txt-3);font-style:italic}
+
+  /* section scaffolding */
+  section{margin-top:38px;opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;scroll-margin-top:24px}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .s2{animation-delay:.06s}.s3{animation-delay:.12s}.s4{animation-delay:.18s}
+  .s5{animation-delay:.24s}.s6{animation-delay:.3s}.s7{animation-delay:.36s}.s8{animation-delay:.42s}
+  .kicker{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--txt-3);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .kicker .num{color:var(--ice);font-weight:600}
+  .kicker .ln{flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
+
+  .panel{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:26px 28px;position:relative;overflow:hidden}
+  .panel.hero{border-color:rgba(111,195,255,.22);box-shadow:0 0 0 1px rgba(111,195,255,.04),0 24px 60px -28px rgba(111,195,255,.22)}
+  .panel.hero::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--ice),rgba(111,195,255,0))}
+
+  .say-label{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .say-label::before{content:"▸";color:var(--ice);font-size:13px}
+
+  /* SCRIPT — written for the ear */
+  .script{font-size:21px;line-height:1.6;font-weight:400;color:#F2F5F9;letter-spacing:-.008em;font-family:'Geist',sans-serif}
+  .script.big{font-size:clamp(20px,2.5vw,24px);line-height:1.55}
+  .script p{margin-bottom:14px}
+  .script p:last-child{margin-bottom:0}
+  .script .fill{color:var(--silver);border-bottom:1px dashed var(--line-2);padding:0 3px}
+  .script .hit{color:#FFF;font-weight:600;text-shadow:0 0 18px rgba(111,195,255,.35)}
+  .script em{color:var(--ice-soft);font-style:italic;font-weight:500}
+  /* pacing marks */
+  .br{display:inline-block;font-family:'Geist Mono',monospace;color:var(--ice);font-size:.65em;letter-spacing:.06em;margin:0 .25em;opacity:.7;vertical-align:.1em;font-weight:500;user-select:none}
+  .stop{display:inline-block;font-family:'Geist Mono',monospace;color:var(--ice);font-size:.7em;letter-spacing:.05em;margin:0 .3em 0 -.1em;opacity:.9;font-weight:600;user-select:none}
+  .beat{display:inline-block;font-family:'Geist Mono',monospace;font-size:.6em;color:var(--txt-3);background:var(--panel);border:1px solid var(--line);padding:1px 8px;border-radius:10px;letter-spacing:.12em;text-transform:uppercase;margin:0 .25em;vertical-align:.15em;user-select:none}
+
+  .note{margin-top:18px;padding-top:15px;border-top:1px solid var(--line);font-size:13.5px;color:var(--txt-2);font-weight:300;line-height:1.55}
+  .note b{color:var(--silver);font-weight:500}
+  .note .credit{font-family:'Geist Mono',monospace;font-size:10.5px;color:var(--txt-3);letter-spacing:.04em;display:block;margin-top:8px}
+
+  /* variant cards */
+  .alts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .alt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 17px}
+  .alt .at{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-3);margin-bottom:9px}
+  .alt .as{font-size:14.5px;color:var(--txt);line-height:1.55}
+  .alt .as .hit{color:#FFF;font-weight:600}
+  .alt .as em{color:var(--ice-soft);font-style:normal;font-weight:500}
+
+  /* launch question */
+  .launch{margin-top:22px;background:rgba(111,195,255,.06);border:1px solid rgba(111,195,255,.22);border-radius:12px;padding:18px 20px}
+  .launch .lq-tag{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+  .launch .lq-tag::before{content:"◆";color:var(--ice)}
+  .launch .lq{font-size:18.5px;color:#F2F5F9;font-weight:500;letter-spacing:-.005em;line-height:1.5}
+  .launch .lq .hit{color:#FFF;font-weight:600}
+
+  /* translation grid */
+  .grid4{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .tcard{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:18px 19px;position:relative;transition:border-color .2s}
+  .tcard:hover{border-color:var(--line-2)}
+  .tcard .feat{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ice);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .tcard .feat .dot{width:5px;height:5px;border-radius:50%;background:var(--ice);box-shadow:0 0 8px var(--ice)}
+  .row{margin-bottom:11px}
+  .row:last-child{margin-bottom:0}
+  .row .rl{font-family:'Geist Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-3);margin-bottom:3px}
+  .row .rv{font-size:14px;color:var(--txt);line-height:1.5}
+  .row.resp .rv{color:var(--amber)}
+  .row.move .rv{color:var(--go)}
+  .row.move .rl{color:var(--go);opacity:.7}
+  .row.resp .rl{color:var(--amber);opacity:.7}
+
+  /* VOSS MOVES */
+  .voss{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .vcard{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:20px 21px;position:relative}
+  .vcard .vh{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:13px;border-bottom:1px solid var(--line)}
+  .vcard .vh .vn{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ice);font-weight:600}
+  .vcard .vh .vt{font-size:17px;color:#FFF;font-weight:600;letter-spacing:-.01em}
+  .vcard .vwhy{font-size:13.5px;color:var(--txt-2);line-height:1.55;margin-bottom:14px;font-weight:300}
+  .vcard .vex{font-size:14.5px;color:var(--txt);line-height:1.55;padding:11px 14px;background:rgba(111,195,255,.04);border-left:2px solid var(--ice);border-radius:0 8px 8px 0;margin-bottom:8px}
+  .vcard .vex:last-child{margin-bottom:0}
+  .vcard .vex .you{font-family:'Geist Mono',monospace;font-size:10px;color:var(--ice);letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:3px}
+  .vcard .vex .them{font-family:'Geist Mono',monospace;font-size:10px;color:var(--amber);letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:3px}
+
+  /* arsenal */
+  .ars{display:grid;grid-template-columns:1.05fr .95fr;gap:13px}
+  .ars .col{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:20px 21px}
+  .ch{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--silver);margin-bottom:15px;display:flex;align-items:center;gap:9px}
+  .ch::after{content:"";flex:1;height:1px;background:var(--line)}
+  .metric{display:flex;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .metric:last-child{border-bottom:0;padding-bottom:0}
+  .metric .mv{font-family:'Geist Mono',monospace;font-weight:600;font-size:17px;color:var(--ice);flex:none;min-width:104px;letter-spacing:-.01em}
+  .metric .ml{font-size:13.5px;color:var(--txt-2);line-height:1.4;font-weight:300}
+  .line-item{font-size:14.5px;color:var(--txt);padding:8px 0;border-bottom:1px solid var(--line);line-height:1.55}
+  .line-item:last-child{border-bottom:0;padding-bottom:0}
+  .line-item b{color:var(--ice-soft);font-weight:500}
+  .pill-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+  .pill{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--txt-2);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:5px 11px}
+
+  /* objections */
+  .obj{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .obj .o{display:grid;grid-template-columns:230px 1fr;gap:18px;padding:17px 22px;border-bottom:1px solid var(--line);align-items:start}
+  .obj .o:last-child{border-bottom:0}
+  .obj .oq{color:var(--amber);font-weight:500;font-size:14.5px;line-height:1.5}
+  .obj .oq::before{content:"“";opacity:.5}.obj .oq::after{content:"”";opacity:.5}
+  .obj .oa{color:var(--txt);font-size:14.5px;line-height:1.55}
+  .obj .oa .label{display:block;color:var(--ice-soft);font-style:italic;margin-bottom:5px;font-size:13.5px}
+  .obj .oa .label::before{content:"“";opacity:.6}.obj .oa .label::after{content:"”";opacity:.6}
+  .obj .oa .label .tag{font-family:'Geist Mono',monospace;font-style:normal;font-size:9px;color:var(--ice);background:rgba(111,195,255,.08);border:1px solid rgba(111,195,255,.18);padding:2px 7px;border-radius:10px;letter-spacing:.12em;text-transform:uppercase;margin-right:8px;vertical-align:1px}
+  .obj .oa b{color:var(--go);font-weight:500}
+
+  /* don't say */
+  .dont{background:rgba(229,138,138,.05);border:1px solid rgba(229,138,138,.2);border-radius:14px;padding:22px 24px}
+  .dont .ch{color:var(--warn)}.dont .ch::after{background:rgba(229,138,138,.18)}
+  .dont ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px 28px}
+  .dont li{font-size:14px;color:var(--txt-2);line-height:1.5;padding-left:22px;position:relative}
+  .dont li::before{content:"✕";position:absolute;left:0;color:var(--warn);font-size:11px;top:3px;font-weight:600}
+  .dont li b{color:var(--txt);font-weight:500}
+  .dont .why{display:block;font-size:12px;color:var(--txt-3);margin-top:3px;line-height:1.45}
+
+  /* footer data strip */
+  .strip{margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 17px;position:relative;overflow:hidden}
+  .stat .v{font-family:'Geist Mono',monospace;font-size:23px;font-weight:600;color:var(--txt);letter-spacing:-.02em;line-height:1}
+  .stat .v span{color:var(--ice)}
+  .stat .v sub{font-size:13px;color:var(--txt-2);font-weight:400}
+  .stat .l{font-size:12.5px;color:var(--txt-2);margin-top:7px;line-height:1.4;font-weight:300}
+  .src{margin-top:24px;font-family:'Geist Mono',monospace;font-size:11px;color:var(--txt-3);letter-spacing:.04em;line-height:1.8}
+  .src b{color:var(--txt-2);font-weight:500}
+
+  @media(max-width:880px){
+    .sidenav{display:none}
+  }
+  @media(max-width:760px){
+    .wrap{padding:0 18px}
+    .alts,.grid4,.voss,.ars,.dont ul,.strip{grid-template-columns:1fr}
+    .strip{grid-template-columns:1fr 1fr}
+    .obj .o{grid-template-columns:1fr;gap:8px}
+    .script{font-size:18.5px}
+    .script.big{font-size:19.5px}
+    header{padding:38px 0 20px}
+    .philo{flex-direction:column;align-items:flex-start;gap:8px}
+    .philo .pn{margin-left:0}
+  }
+  @media print{
+    body{background:#fff;color:#000}
+    body::before,body::after,.sidenav,.progress{display:none}
+    .panel,.tcard,.vcard,.obj,.dont,.stat,.philo,.alt{background:#fff;border:1px solid #ccc;box-shadow:none}
+    .script,.launch .lq{color:#000}
+    h1,h1 .dim{color:#000}
+    .br,.stop{color:#666}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<nav class="sidenav" aria-label="Sections">
+  <a href="#open" data-s="open"><span class="lbl">The Open</span><span class="dot"></span></a>
+  <a href="#bridge" data-s="bridge"><span class="lbl">The Bridge</span><span class="dot"></span></a>
+  <a href="#translate" data-s="translate"><span class="lbl">Translation</span><span class="dot"></span></a>
+  <a href="#voss" data-s="voss"><span class="lbl">Voss Moves</span><span class="dot"></span></a>
+  <a href="#arsenal" data-s="arsenal"><span class="lbl">Arsenal</span><span class="dot"></span></a>
+  <a href="#bounces" data-s="bounces"><span class="lbl">Bounces</span><span class="dot"></span></a>
+  <a href="#avoid" data-s="avoid"><span class="lbl">Never Say</span><span class="dot"></span></a>
+</nav>
+
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="mark"></div>
+      <div class="b-name">Echelon Advising</div>
+      <div class="b-sub">COLD CALL CONSOLE · v2</div>
+    </div>
+    <h1>The first two lines.<br><span class="dim">Everything else is conversation.</span></h1>
+    <p class="lede">Built for live use. Read the top two panels. Reach for the rest only when the call opens up. Every line is written <b>for the ear</b> — one breath, one idea, then on to the next.</p>
+
+    <div class="philo">
+      <div class="pl">Your only job</div>
+      <div class="pv">The opener and bridge don't close. They <b>earn the next two minutes</b>. Booked calls run ~6 minutes; dead ones die at ~3. Buy minute two, then let the conversation do the work.</div>
+      <div class="pn">Gong · 300M calls</div>
+    </div>
+
+    <div class="pacekey">
+      <span class="pkl">Pacing key</span>
+      <span class="pkp"><span class="m">/</span> quick breath</span>
+      <span class="pkp"><span class="m">//</span> full stop, let it sit</span>
+      <span class="pkp"><span class="b">[beat]</span> deliberate silence</span>
+      <span class="pkp"><span class="h">bold</span> hit this word</span>
+    </div>
+  </header>
+
+  <!-- 01 — THE OPEN -->
+  <section id="open" class="s2">
+    <div class="kicker"><span class="num">01</span> The Open · first 10 seconds <span class="ln"></span></div>
+    <div class="panel hero">
+      <div class="say-label">Default · The Braun disarm — own the call, hand them the wheel</div>
+      <div class="script big">
+        <p>Hey <span class="fill">[Name]</span> — I'll be honest with you.<span class="stop">//</span></p>
+        <p>You probably hate these calls about as much as I hate making them.<span class="stop">//</span></p>
+        <p>Would you be opposed to giving me <span class="hit">30 seconds</span> to tell you why I called?<span class="br">/</span></p>
+        <p>If it lands, great.<span class="stop">//</span> If it doesn't — hang up on me. <span class="hit">No hard feelings.</span></p>
+      </div>
+      <div class="note">
+        <b>Why this works:</b> Lowering your own status removes the threat — that's the move that makes them stay. "Would you be opposed to…" is a no-oriented question (Chris Voss): a "no" feels safe, protects their autonomy, and paradoxically opens them up. You end on the easy line so the last thing they hear is permission, not a pitch.
+        <span class="credit">Pattern: Josh Braun · No-oriented Q: Voss, Never Split the Difference · Permission opener data: Gong / 300M calls</span>
+      </div>
+
+      <div class="alts">
+        <div class="alt">
+          <div class="at">Variant · With a relevance hook (use when you have one)</div>
+          <div class="as">"Hey [Name] — quick one. I'll be honest, total cold call. <em>The reason I called you specifically</em> — <span class="fill">[1-line specific hook]</span>. Would you be opposed to <span class="hit">30 seconds</span> on why I think it's worth a real conversation?"</div>
+        </div>
+        <div class="alt">
+          <div class="at">Variant · Dead-cold, dead-honest (no hook, no pretense)</div>
+          <div class="as">"Hey [Name] — total cold call. I figured you'd respect me getting to the point instead of pretending we know each other. Would you be opposed to <span class="hit">20 seconds</span>? After that, you can tell me to take a hike."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 — THE BRIDGE -->
+  <section id="bridge" class="s3">
+    <div class="kicker"><span class="num">02</span> The Bridge · the line that decides how long they stay <span class="ln"></span></div>
+    <div class="panel hero">
+      <div class="say-label">Lead with their world. Your offer doesn't show up until they're already nodding.</div>
+      <div class="script">
+        <p>So here's why I called.<span class="stop">//</span></p>
+        <p>Most owners I talk to right now are <span class="hit">buried</span>.<span class="stop">//</span></p>
+        <p>A lead comes in at 9 at night —<span class="br">/</span> nobody gets back till the morning —<span class="br">/</span> and by then they've already called someone else.<span class="stop">//</span></p>
+        <p>The follow-ups stack up.<span class="stop">//</span> The quotes sit for days.<span class="stop">//</span></p>
+        <p>It all runs through <span class="hit">you</span>.<span class="stop">//</span> So when you're slammed, things slip —<span class="br">/</span> and you can feel the money leaking, but you can't find the time to plug it.<span class="stop">//</span></p>
+        <p><span class="beat">[beat]</span></p>
+        <p>That's the part we take off your plate.<span class="stop">//</span></p>
+        <p>We build the systems that handle it — quietly, in the background —<span class="br">/</span> whether you're at your desk or <span class="hit">not</span>.<span class="stop">//</span></p>
+        <p>Most owners we do this for were losing <span class="hit">15, 20 hours a week</span> to it.</p>
+      </div>
+
+      <div class="launch">
+        <div class="lq-tag">The calibrated question · this is the line that gets them talking</div>
+        <div class="lq">"So —<span class="br" style="color:var(--ice)">/</span> of the inbound, the follow-up, the quoting —<span class="br" style="color:var(--ice)">/</span> which one's actually costing you the <span class="hit">most</span> right now?"</div>
+      </div>
+      <div class="note">
+        <b>Why this works:</b> Problem first, offer second. The scene at 9pm is something they've lived — labeling their reality back to them ("buried") makes them feel understood before they hear a pitch. Then the question is calibrated (starts with "which"), giving them the illusion of control while you keep the frame. It presupposes a bottleneck — softer than "do you have this problem?", which dead-ends in yes/no.
+        <span class="credit">Labeling + calibrated questions: Chris Voss · Problem-first pitch: Josh Braun · Pitch length in winning calls: ~40–53 seconds (Gong)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — TRANSLATION GRID -->
+  <section id="translate" class="s4">
+    <div class="kicker"><span class="num">03</span> Translation Grid · what you say · what it means · what they say back · your move <span class="ln"></span></div>
+    <div class="grid4">
+
+      <div class="tcard">
+        <div class="feat"><span class="dot"></span> Inbound</div>
+        <div class="row"><div class="rl">What it means to them</div><div class="rv">"A lead reaches out. Nobody answers fast — or at all. You lose deals you already paid to get."</div></div>
+        <div class="row resp"><div class="rl">What they say back</div><div class="rv">"Yeah, we're slow to respond." / "Leads slip through, honestly."</div></div>
+        <div class="row move"><div class="rl">Your move</div><div class="rv">"Imagine every inbound gets a real reply in under a minute. 24/7. That one thing usually pays for the whole build."</div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="feat"><span class="dot"></span> Follow-up</div>
+        <div class="row"><div class="rl">What it means to them</div><div class="rv">"The money's in the follow-up. It's the first thing that dies the second you get busy."</div></div>
+        <div class="row resp"><div class="rl">What they say back</div><div class="rv">"We're terrible at follow-up." / "I keep meaning to chase those."</div></div>
+        <div class="row move"><div class="rl">Your move</div><div class="rv">"The system follows up for you — timed, personal, until they answer. Owners get back about a third of the quotes they wrote off as dead."</div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="feat"><span class="dot"></span> Quoting</div>
+        <div class="row"><div class="rl">What it means to them</div><div class="rv">"Someone asks for a quote. It takes days. By then they've gone with whoever answered first."</div></div>
+        <div class="row resp"><div class="rl">What they say back</div><div class="rv">"Quotes take forever." / "That's on me, I'm the bottleneck."</div></div>
+        <div class="row move"><div class="rl">Your move</div><div class="rv">"Request comes in, accurate quote goes out same day. Same-day quotes close about a third more often."</div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="feat"><span class="dot"></span> Outbound</div>
+        <div class="row"><div class="rl">What it means to them</div><div class="rv">"You know you should be out there. You're too buried running the business you have."</div></div>
+        <div class="row resp"><div class="rl">What they say back</div><div class="rv">"We don't really do outbound." / "No time for that."</div></div>
+        <div class="row move"><div class="rl">Your move</div><div class="rv">"We build the outbound engine so it runs without you thinking about it. Pipeline stays full whether you're busy or not."</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 04 — VOSS MOVES (NEW) -->
+  <section id="voss" class="s5">
+    <div class="kicker"><span class="num">04</span> Voss Moves · pull these when the conversation opens up <span class="ln"></span></div>
+    <div class="voss">
+
+      <div class="vcard">
+        <div class="vh"><div class="vn">M1</div><div class="vt">Label</div></div>
+        <div class="vwhy">When they push back, hedge, or go quiet. Naming what they're feeling makes them feel understood — and quietly invites them to confirm or correct. Voss calls it "labeling unveils the veiled."</div>
+        <div class="vex"><span class="them">They say</span>"We're already using something for that."</div>
+        <div class="vex"><span class="you">You</span>"It sounds like you've got a system in place that's mostly working." <span style="color:var(--txt-3)">[pause, let them clarify]</span></div>
+        <div class="vex"><span class="you">Patterns</span>"It sounds like…" · "It seems like…" · "It feels like…"</div>
+      </div>
+
+      <div class="vcard">
+        <div class="vh"><div class="vn">M2</div><div class="vt">Mirror</div></div>
+        <div class="vwhy">When they give a short answer and you want more. Repeat their last 2–3 words as a question. Most people fill the silence and tell you more than they meant to.</div>
+        <div class="vex"><span class="them">They say</span>"It's mostly a bandwidth issue."</div>
+        <div class="vex"><span class="you">You</span>"A bandwidth issue?" <span style="color:var(--txt-3)">[pause — wait]</span></div>
+        <div class="vex"><span class="you">Pattern</span>Mirror the last 2–3 words. Up-tone. Then say nothing.</div>
+      </div>
+
+      <div class="vcard">
+        <div class="vh"><div class="vn">M3</div><div class="vt">Calibrated Question</div></div>
+        <div class="vwhy">When you want them to think out loud and articulate the problem in their own words. Starts with "what" or "how." Gives them the illusion of control while you set the frame.</div>
+        <div class="vex"><span class="you">Use</span>"What's the hardest part of that?"</div>
+        <div class="vex"><span class="you">Use</span>"How are you handling it right now?"</div>
+        <div class="vex"><span class="you">Use</span>"What's it costing you to leave it the way it is?"</div>
+      </div>
+
+      <div class="vcard">
+        <div class="vh"><div class="vn">M4</div><div class="vt">No-Oriented Ask</div></div>
+        <div class="vwhy">When you're asking for the next step. "Yes" feels like a commitment trap; "no" feels safe. Frame the ask so a "no" is easy — they'll often say yes anyway.</div>
+        <div class="vex"><span class="you">Use</span>"Would you be opposed to 15 minutes Thursday?"</div>
+        <div class="vex"><span class="you">Use</span>"Would it be a bad idea to put something on the calendar so I'm not bugging you at the wrong time?"</div>
+        <div class="vex"><span class="you">Use</span>"Have you given up on solving this, or is it still on the list?"</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 05 — ARSENAL -->
+  <section id="arsenal" class="s6">
+    <div class="kicker"><span class="num">05</span> Arsenal · numbers, positioning, the close <span class="ln"></span></div>
+    <div class="ars">
+      <div class="col">
+        <div class="ch">Numbers that land</div>
+        <div class="metric"><div class="mv">15–20 hrs/wk</div><div class="ml">Time owners get back once the manual work runs on its own.</div></div>
+        <div class="metric"><div class="mv">~40%</div><div class="ml">Of an owner's working hours go to tasks a system could handle.</div></div>
+        <div class="metric"><div class="mv">4–8 months</div><div class="ml">Typical payback — pays for itself in labor, speed, fewer errors.</div></div>
+        <div class="metric"><div class="mv">+31%</div><div class="ml">Higher close rate when quotes go out same-day vs. days later.</div></div>
+        <div class="metric"><div class="mv">25–35%</div><div class="ml">Of "dead" quotes recovered by automated follow-up alone.</div></div>
+        <div class="metric"><div class="mv">90 days</div><div class="ml">Audit → built → live. Then we stay on and run it.</div></div>
+      </div>
+      <div class="col">
+        <div class="ch">Positioning · say it in your words</div>
+        <div class="line-item">"We don't advise. <b>We build and operate.</b> Not a strategy deck — we deploy the infrastructure and stay on to run it."</div>
+        <div class="line-item">"You own <b>every outcome</b> it produces — every lead, every dollar saved. We run the system. You keep the results."</div>
+        <div class="line-item">"This isn't a chatbot you babysit. It's <b>infrastructure that runs while you sleep.</b>"</div>
+        <div class="line-item">"We work across restaurants, agencies, law firms, real estate, clinics, ecommerce, VC-backed teams. If it has a workflow, we can build around it."</div>
+        <div style="margin-top:18px" class="ch">Qualify quietly</div>
+        <div class="pill-row">
+          <span class="pill">$20K–$200K / mo</span>
+          <span class="pill">5–100 employees</span>
+          <span class="pill">established workflows</span>
+          <span class="pill">hitting a scaling wall</span>
+        </div>
+        <div style="margin-top:18px" class="ch">The close · ask for a conversation, not a sale</div>
+        <div class="line-item">"Here's all I want — not a commitment, just a working call. We look at where the time's actually leaking and what the next 90 days could look like. <b>Would you be opposed to 20 minutes Thursday?</b>"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 — OBJECTION BOUNCES -->
+  <section id="bounces" class="s7">
+    <div class="kicker"><span class="num">06</span> Quick Bounces · label first, then redirect <span class="ln"></span></div>
+    <div class="obj">
+
+      <div class="o">
+        <div class="oq">It's too expensive.</div>
+        <div class="oa">
+          <span class="label"><span class="tag">Label</span>It sounds like the price feels steep relative to what it'll move for you.</span>
+          Then: "Quick math — how many hours a week does your team spend on that by hand? Twenty at $30 is $2,600/mo you're already paying for it. <b>The real question is whether you can keep paying it manually.</b>"
+        </div>
+      </div>
+
+      <div class="o">
+        <div class="oq">We tried AI and it didn't work.</div>
+        <div class="oa">
+          <span class="label"><span class="tag">Label</span>Sounds like you got burned and you're not eager to go again.</span>
+          Then: "Honestly — almost everyone says that. Usually a generic tool, or an agency that sold theory. <b>We embed, build around how you actually run, and stay on to operate it.</b> Different thing entirely. Worth 15 minutes to show you what that looks like?"
+        </div>
+      </div>
+
+      <div class="o">
+        <div class="oq">I don't have time for this right now.</div>
+        <div class="oa">
+          <span class="label"><span class="tag">Label</span>It seems like your plate is already past full.</span>
+          Then: "That's literally the problem we solve. <b>Week one is about two hours of your time.</b> After that you're handing work off, not adding it."
+        </div>
+      </div>
+
+      <div class="o">
+        <div class="oq">Can't we just use ChatGPT ourselves?</div>
+        <div class="oa">
+          <span class="label"><span class="tag">Label</span>Sounds like you've already started thinking about doing this in-house.</span>
+          Then: "You should — it's a great tool. But that's something you have to sit and operate. <b>We build the infrastructure layer that runs on its own</b> while you do everything else."
+        </div>
+      </div>
+
+      <div class="o">
+        <div class="oq">Just send me some info.</div>
+        <div class="oa">
+          <span class="label"><span class="tag">Label</span>It sounds like you want to take a look on your own time.</span>
+          Then: "Totally fair — I can. But a PDF won't tell you anything real about <em>your</em> setup. <b>What's one thing you'd actually need to see to justify 15 minutes with me?</b>"
+        </div>
+      </div>
+
+      <div class="o">
+        <div class="oq">Not interested.</div>
+        <div class="oa">
+          <span class="label"><span class="tag">Label</span>Sounds like this isn't landing.</span>
+          Then: "Fair enough. Before I let you go — is it that you've already got this solved, or that the timing's wrong, or just that you hate cold calls? No wrong answer, I'll calibrate."
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 07 — NEVER SAY -->
+  <section id="avoid" class="s8">
+    <div class="dont">
+      <div class="ch">Never say</div>
+      <ul>
+        <li><b>"Is this a bad time?"</b><span class="why">Books under 1%. It's always a bad time — you're handing them the exit before you've earned the seconds.</span></li>
+        <li><b>"How's your day going?"</b><span class="why">They know you don't care. Reads as "what are you selling?"</span></li>
+        <li><b>"Real quick" / "basically" / "just" / "kind of"</b><span class="why">Hedges and filler. Editors cut them first. Dilutes authority.</span></li>
+        <li><b>"Leaving money on the table" / scarcity / fear framing</b><span class="why">Off-brand. We don't sell from fear. State the truth — they're already losing — without the threat.</span></li>
+        <li><b>"AI replaces your employees"</b><span class="why">We give time back, not headcount cuts. Never frame it this way.</span></li>
+        <li><b>"We advise / consult / hand it off"</b><span class="why">Wrong category. We build and operate. Full stop.</span></li>
+        <li><b>"We help businesses unlock their potential…"</b><span class="why">Buzzword soup. Talk like a person, not a brochure.</span></li>
+        <li><b>Long sentences with stacked clauses</b><span class="why">If it's hard to say, it's hard to hear. One idea per breath.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- footer stats -->
+  <div class="strip">
+    <div class="stat"><div class="v"><span>82%</span></div><div class="l">of B2B buyers still take meetings booked off a cold call.</div></div>
+    <div class="stat"><div class="v">5<sub>sec</sub></div><div class="l">to earn 5 minutes. The first ~10 seconds decide the call.</div></div>
+    <div class="stat"><div class="v"><span>1 in 20</span></div><div class="l">average conversation-to-meeting rate. Stay calm — rejection is the math, not you.</div></div>
+    <div class="stat"><div class="v">Wed</div><div class="l">best day. Windows: 8–9am &amp; 4–5pm — lifts connects 40–70%.</div></div>
+  </div>
+
+  <div class="src">
+    <b>Built on:</b> Gong Labs · 300M+ cold calls analyzed · HubSpot 2025 State of Cold Calling · WHAM 2024 dataset · Chris Voss · <i>Never Split the Difference</i> · Josh Braun · sales disarm methodology · 30 Minutes to President's Club framework · RAIN Group buyer data.<br>
+    <b>Writing for the ear:</b> Throughline Group · Columbia DS · voiceover &amp; speechwriting craft.<br>
+    <b>Echelon proof:</b> 90-Day Infrastructure Sprint client outcomes · time-savings &amp; payback data · same-day proposal close lift.
+  </div>
+
+</div>
+
+<script>
+  // scroll progress
+  const prog = document.getElementById('progress');
+  const nav = document.querySelectorAll('.sidenav a');
+  const sections = ['open','bridge','translate','voss','arsenal','bounces','avoid'].map(id => document.getElementById(id));
+
+  function onScroll(){
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    prog.style.width = pct + '%';
+    // active section
+    let active = sections[0].id;
+    for(const s of sections){
+      const r = s.getBoundingClientRect();
+      if(r.top <= 120) active = s.id;
+    }
+    nav.forEach(a => a.classList.toggle('active', a.dataset.s === active));
+  }
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+</script>
+</body>
+</html>
