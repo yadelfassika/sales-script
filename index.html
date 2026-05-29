@@ -105,7 +105,7 @@
   section{margin-top:38px;opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;scroll-margin-top:24px}
   @keyframes rise{to{opacity:1;transform:none}}
   .s2{animation-delay:.06s}.s3{animation-delay:.12s}.s4{animation-delay:.18s}
-  .s5{animation-delay:.24s}.s6{animation-delay:.3s}.s7{animation-delay:.36s}.s8{animation-delay:.42s}
+  .s5{animation-delay:.24s}.s6{animation-delay:.3s}.s7{animation-delay:.36s}.s8{animation-delay:.42s}.s9{animation-delay:.48s}
   .kicker{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--txt-3);display:flex;align-items:center;gap:10px;margin-bottom:14px}
   .kicker .num{color:var(--ice);font-weight:600}
   .kicker .ln{flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent)}
@@ -141,6 +141,20 @@
   .alt .as{font-size:14.5px;color:var(--txt);line-height:1.55}
   .alt .as .hit{color:#FFF;font-weight:600}
   .alt .as em{color:var(--ice-soft);font-style:normal;font-weight:500}
+
+  /* niche bridges */
+  .niche-intro{font-size:14.5px;color:var(--txt-2);font-weight:300;line-height:1.55;margin-bottom:16px;max-width:780px}
+  .niche-intro b{color:var(--ice-soft);font-weight:500}
+  .panel.niche{margin-bottom:14px;border-color:rgba(111,195,255,.14)}
+  .panel.niche:last-child{margin-bottom:0}
+  .panel.niche::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,rgba(111,195,255,.5),rgba(111,195,255,0))}
+  .panel.niche .script{font-size:18px;line-height:1.62}
+  .say-label .nbadge{font-family:'Geist Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--go);background:rgba(115,224,172,.08);border:1px solid rgba(115,224,172,.28);padding:2px 8px;border-radius:10px}
+  .say-label .nquote{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.03em;color:var(--txt-3);text-transform:none;margin-left:auto;font-weight:400}
+  @media(max-width:760px){
+    .say-label{flex-wrap:wrap}
+    .say-label .nquote{margin-left:0;width:100%}
+  }
 
   /* launch question */
   .launch{margin-top:22px;background:rgba(111,195,255,.06);border:1px solid rgba(111,195,255,.22);border-radius:12px;padding:18px 20px}
@@ -252,6 +266,7 @@
 <nav class="sidenav" aria-label="Sections">
   <a href="#open" data-s="open"><span class="lbl">The Open</span><span class="dot"></span></a>
   <a href="#bridge" data-s="bridge"><span class="lbl">The Bridge</span><span class="dot"></span></a>
+  <a href="#niches" data-s="niches"><span class="lbl">Niche Bridges</span><span class="dot"></span></a>
   <a href="#translate" data-s="translate"><span class="lbl">Translation</span><span class="dot"></span></a>
   <a href="#voss" data-s="voss"><span class="lbl">Voss Moves</span><span class="dot"></span></a>
   <a href="#arsenal" data-s="arsenal"><span class="lbl">Arsenal</span><span class="dot"></span></a>
@@ -265,7 +280,7 @@
     <div class="brand">
       <div class="mark"></div>
       <div class="b-name">Echelon Advising</div>
-      <div class="b-sub">COLD CALL CONSOLE · v2</div>
+      <div class="b-sub">COLD CALL CONSOLE · v3</div>
     </div>
     <h1>The first two lines.<br><span class="dim">Everything else is conversation.</span></h1>
     <p class="lede">Built for live use. Read the top two panels. Reach for the rest only when the call opens up. Every line is written <b>for the ear</b> — one breath, one idea, then on to the next.</p>
@@ -341,9 +356,81 @@
     </div>
   </section>
 
-  <!-- 03 — TRANSLATION GRID -->
-  <section id="translate" class="s4">
-    <div class="kicker"><span class="num">03</span> Translation Grid · what you say · what it means · what they say back · your move <span class="ln"></span></div>
+  <!-- 03 — NICHE BRIDGES -->
+  <section id="niches" class="s4">
+    <div class="kicker"><span class="num">03</span> Niche Bridges · the same move, rebuilt in their words — pointed at the quote <span class="ln"></span></div>
+    <div class="niche-intro">The Bridge above is your general version. Below it's rebuilt one industry at a time — same shape (label → reframe → the reveal), their exact world, aimed straight at quoting. <b>Pick one. Run it until it's muscle memory. Then earn the right to add the next.</b></div>
+
+    <!-- MED SPAS -->
+    <div class="panel niche">
+      <div class="say-label">Med Spas <span class="nbadge">Start here</span> <span class="nquote">the quote = a "how much?" DM → a booked consult</span></div>
+      <div class="script">
+        <p>So here's why I called.<span class="stop">//</span></p>
+        <p>Most med spa owners I talk to are <span class="hit">buried</span> —<span class="br">/</span> back-to-back in treatment rooms all day —<span class="br">/</span> and they think they need more ads.<span class="stop">//</span> They don't.<span class="stop">//</span> The leads are already coming in —<span class="br">/</span> they're leaking out the bottom.<span class="stop">//</span></p>
+        <p>Someone DMs at 9 at night —<span class="br">/</span> "how much for lip filler?" —<span class="br">/</span> nobody answers till the morning,<span class="br">/</span> and by then she's booked with the spa that replied in <span class="hit">two minutes</span>.<span class="stop">//</span></p>
+        <p><span class="beat">[beat]</span></p>
+        <p>Here's what's shifted in the last 18 months —<span class="br">/</span> and most spas haven't caught up yet.<span class="stop">//</span></p>
+        <p>We build an <span class="hit">AI front desk</span> for med spas.<span class="stop">//</span> Not a chatbot —<span class="br">/</span> it answers every inquiry in seconds,<span class="br">/</span> quotes her real pricing,<span class="br">/</span> books the consult,<span class="br">/</span> and follows up until she shows —<span class="br">/</span> in your spa's voice,<span class="br">/</span> day or night.<span class="stop">//</span></p>
+        <p>The owners we build this for were quietly losing <span class="hit">20, 30 consults a month</span> to slow replies.</p>
+      </div>
+      <div class="launch">
+        <div class="lq-tag">The calibrated question · gets them talking</div>
+        <div class="lq">"So —<span class="br" style="color:var(--ice)">/</span> the ones who ask your price,<span class="br" style="color:var(--ice)">/</span> the ones who want to book,<span class="br" style="color:var(--ice)">/</span> the ones who ghost after the consult —<span class="br" style="color:var(--ice)">/</span> which one's leaking the <span class="hit">most</span> for you right now?"</div>
+      </div>
+      <div class="note">
+        <b>Why this works for med spas:</b> These buyers shop on impulse and compare three spas at once — speed-to-reply is the entire game. The 9pm "how much?" DM is something every owner has lived, so naming it lands instantly. "AI front desk" maps to a role they already pay for, so they understand what you do in one line. Stay on speed and booking — never imply a medical or clinical outcome.
+        <span class="credit">Speed-to-lead: Harvard Business Review / LRM study · Framing: Voss labeling + Loewenstein information gap</span>
+      </div>
+    </div>
+
+    <!-- DENTAL -->
+    <div class="panel niche">
+      <div class="say-label">Dental Practices <span class="nquote">the quote = a treatment plan → a scheduled case</span></div>
+      <div class="script">
+        <p>So here's why I called.<span class="stop">//</span></p>
+        <p>Most practice owners I talk to are sitting on a pile of treatment that's <span class="hit">already been diagnosed</span> —<span class="br">/</span> and never scheduled.<span class="stop">//</span> They think it's a patient problem.<span class="stop">//</span> It's not —<span class="br">/</span> it's a follow-up problem.<span class="stop">//</span></p>
+        <p>You present a $6,000 plan in the chair —<span class="br">/</span> the patient says "let me think about it" —<span class="br">/</span> walks out —<span class="br">/</span> and nobody chases it.<span class="stop">//</span> That plan just sits there.<span class="stop">//</span></p>
+        <p><span class="beat">[beat]</span></p>
+        <p>Here's what's changed in the last 18 months —<span class="br">/</span> and most offices haven't caught up yet.<span class="stop">//</span></p>
+        <p>We build <span class="hit">AI staff</span> for dental practices.<span class="stop">//</span> Not a chatbot —<span class="br">/</span> it builds the estimate,<span class="br">/</span> verifies the insurance,<span class="br">/</span> lays out the financing,<span class="br">/</span> and follows up on every unscheduled plan until it's booked —<span class="br">/</span> in your office's voice.<span class="stop">//</span></p>
+        <p>The practices we build this for were leaving <span class="hit">six figures a year</span> in diagnosed treatment unscheduled.</p>
+      </div>
+      <div class="launch">
+        <div class="lq-tag">The calibrated question · gets them talking</div>
+        <div class="lq">"So —<span class="br" style="color:var(--ice)">/</span> the new-patient calls,<span class="br" style="color:var(--ice)">/</span> the insurance verification,<span class="br" style="color:var(--ice)">/</span> the treatment plans that never get scheduled —<span class="br" style="color:var(--ice)">/</span> which one's costing you the <span class="hit">most</span> right now?"</div>
+      </div>
+      <div class="note">
+        <b>Why this works for dental:</b> Here the "quote" is the treatment plan plus the out-of-pocket estimate, and the leak is case acceptance. "Unscheduled treatment" is a number they can pull up in Dentrix or Open Dental right now — use their word and they know you've done this before. The chair-side "let me think about it" is universal. Keep it to scheduling, insurance admin, and follow-up — never anything clinical.
+        <span class="credit">Case acceptance + unscheduled-treatment language: standard PMS reporting · Framing: Voss labeling + Loewenstein information gap</span>
+      </div>
+    </div>
+
+    <!-- HVAC / ROOFING -->
+    <div class="panel niche">
+      <div class="say-label">HVAC &amp; Roofing <span class="nquote">the quote = a call → a same-day estimate → a signed job</span></div>
+      <div class="script">
+        <p>So here's why I called.<span class="stop">//</span></p>
+        <p>Most owners I talk to are losing jobs they <span class="hit">already won the lead for</span> —<span class="br">/</span> and they think they need more trucks or more marketing.<span class="stop">//</span> They don't.<span class="stop">//</span> They're losing it at the <span class="hit">quote</span>.<span class="stop">//</span></p>
+        <p>A homeowner calls at 9 at night —<span class="br">/</span> AC's out, roof's leaking —<span class="br">/</span> nobody picks up.<span class="stop">//</span> Or the estimate takes three days,<span class="br">/</span> and by then they've signed with whoever got back to them <span class="hit">first</span>.<span class="stop">//</span></p>
+        <p><span class="beat">[beat]</span></p>
+        <p>Here's what's shifted in the last 18 months —<span class="br">/</span> and most contractors haven't caught up yet.<span class="stop">//</span></p>
+        <p>We build <span class="hit">AI staff</span> for shops like yours.<span class="stop">//</span> Not a chatbot —<span class="br">/</span> it answers the phone the second it rings,<span class="br">/</span> books the estimate,<span class="br">/</span> gets the quote out same-day,<span class="br">/</span> and follows up until they sign —<span class="br">/</span> in your company's voice,<span class="br">/</span> day or night.<span class="stop">//</span></p>
+        <p>The owners we build this for were losing <span class="hit">15, 20 jobs a month</span> to slow quotes and missed calls.</p>
+      </div>
+      <div class="launch">
+        <div class="lq-tag">The calibrated question · gets them talking</div>
+        <div class="lq">"So —<span class="br" style="color:var(--ice)">/</span> the missed calls,<span class="br" style="color:var(--ice)">/</span> the estimates that drag,<span class="br" style="color:var(--ice)">/</span> the quotes nobody follows up on —<span class="br" style="color:var(--ice)">/</span> which one's costing you the <span class="hit">most</span> jobs right now?"</div>
+      </div>
+      <div class="note">
+        <b>Why this works for the trades:</b> Speed-to-lead is the whole ballgame — the contractor who answers and quotes first usually wins the job. "You're losing it at the quote" reframes a marketing-or-capacity complaint into a process leak you can actually plug. The 9pm emergency call and the three-day estimate are lived reality. This is the cleanest end-to-end quoting fit: answer → estimate → quote → follow-up → signed.
+        <span class="credit">Speed-to-lead / first-responder advantage: HBR + Lead Connect studies · Framing: Voss labeling + Loewenstein information gap</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 — TRANSLATION GRID -->
+  <section id="translate" class="s5">
+    <div class="kicker"><span class="num">04</span> Translation Grid · what you say · what it means · what they say back · your move <span class="ln"></span></div>
     <div class="grid4">
 
       <div class="tcard">
@@ -377,9 +464,9 @@
     </div>
   </section>
 
-  <!-- 04 — VOSS MOVES (NEW) -->
-  <section id="voss" class="s5">
-    <div class="kicker"><span class="num">04</span> Voss Moves · pull these when the conversation opens up <span class="ln"></span></div>
+  <!-- 05 — VOSS MOVES -->
+  <section id="voss" class="s6">
+    <div class="kicker"><span class="num">05</span> Voss Moves · pull these when the conversation opens up <span class="ln"></span></div>
     <div class="voss">
 
       <div class="vcard">
@@ -417,9 +504,9 @@
     </div>
   </section>
 
-  <!-- 05 — ARSENAL -->
-  <section id="arsenal" class="s6">
-    <div class="kicker"><span class="num">05</span> Arsenal · numbers, positioning, the close <span class="ln"></span></div>
+  <!-- 06 — ARSENAL -->
+  <section id="arsenal" class="s7">
+    <div class="kicker"><span class="num">06</span> Arsenal · numbers, positioning, the close <span class="ln"></span></div>
     <div class="ars">
       <div class="col">
         <div class="ch">Numbers that land</div>
@@ -449,9 +536,9 @@
     </div>
   </section>
 
-  <!-- 06 — OBJECTION BOUNCES -->
-  <section id="bounces" class="s7">
-    <div class="kicker"><span class="num">06</span> Quick Bounces · label first, then redirect <span class="ln"></span></div>
+  <!-- 07 — OBJECTION BOUNCES -->
+  <section id="bounces" class="s8">
+    <div class="kicker"><span class="num">07</span> Quick Bounces · label first, then redirect <span class="ln"></span></div>
     <div class="obj">
 
       <div class="o">
@@ -505,8 +592,8 @@
     </div>
   </section>
 
-  <!-- 07 — NEVER SAY -->
-  <section id="avoid" class="s8">
+  <!-- 08 — NEVER SAY -->
+  <section id="avoid" class="s9">
     <div class="dont">
       <div class="ch">Never say</div>
       <ul>
@@ -524,7 +611,7 @@
 
   <!-- footer stats -->
   <div class="strip">
-    <div class="stat"><div class="v"><span>82%</span></div><div class="l">of B2B buyers still take meetings booked off a cold call.</div></div>
+    <div class="stat"><div class="v"><span>82%</span></div><div class="l">of buyers accept meetings with sellers who proactively reach out (RAIN Group).</div></div>
     <div class="stat"><div class="v">5<sub>sec</sub></div><div class="l">to earn 5 minutes. The first ~10 seconds decide the call.</div></div>
     <div class="stat"><div class="v"><span>1 in 20</span></div><div class="l">average conversation-to-meeting rate. Stay calm — rejection is the math, not you.</div></div>
     <div class="stat"><div class="v">Wed</div><div class="l">best day. Windows: 8–9am &amp; 4–5pm — lifts connects 40–70%.</div></div>
@@ -542,7 +629,7 @@
   // scroll progress
   const prog = document.getElementById('progress');
   const nav = document.querySelectorAll('.sidenav a');
-  const sections = ['open','bridge','translate','voss','arsenal','bounces','avoid'].map(id => document.getElementById(id));
+  const sections = ['open','bridge','niches','translate','voss','arsenal','bounces','avoid'].map(id => document.getElementById(id));
 
   function onScroll(){
     const h = document.documentElement;
